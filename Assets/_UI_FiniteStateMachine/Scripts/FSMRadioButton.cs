@@ -50,13 +50,13 @@ namespace UIFiniteStateMachine
                     return;
                 }
                 isOn = value;
-                if (isOn)
+                if (IsOn)
                 {
                     onSelected?.Invoke();
                     HandleInput(Input.Selected);
                     if (CheckIsOnChange())
                     {
-                        curIsOn = isOn;
+                        curIsOn = IsOn;
                         onValueChanged?.Invoke(curIsOn);
                     }
                 }
@@ -91,7 +91,7 @@ namespace UIFiniteStateMachine
         private void OnEnable()
         {
             group.Register(this);
-            curIsOn = isOn;
+            curIsOn = IsOn;
 
             curInteractable = Interactable;
             if (!curInteractable)
@@ -99,7 +99,7 @@ namespace UIFiniteStateMachine
                 HandleInput(Input.Disabled);
                 return;
             }
-            if (isOn)
+            if (IsOn)
             {
                 HandleInput(Input.Selected);
             }
@@ -197,7 +197,7 @@ namespace UIFiniteStateMachine
 
         private bool CheckInteractableChange()
         {
-            if (curInteractable != interactable)
+            if (curInteractable != Interactable)
             {
                 return true;
             }
@@ -205,7 +205,7 @@ namespace UIFiniteStateMachine
         }
         private bool CheckIsOnChange()
         {
-            if (curIsOn != isOn)
+            if (curIsOn != IsOn)
             {
                 return true;
             }

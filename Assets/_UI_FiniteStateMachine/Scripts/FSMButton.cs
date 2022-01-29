@@ -43,7 +43,7 @@ namespace UIFiniteStateMachine
 
         private void OnEnable()
         {
-            curInteractable = interactable;
+            curInteractable = Interactable;
         }
 
         private void HandleInput(Input input)
@@ -102,7 +102,7 @@ namespace UIFiniteStateMachine
 
         private bool CheckInteractableChange()
         {
-            if (curInteractable != interactable)
+            if (curInteractable != Interactable)
             {
                 return true;
             }
