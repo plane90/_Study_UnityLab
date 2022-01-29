@@ -11,7 +11,6 @@ namespace UIFiniteStateMachine
         public State state = State.Normal;
 
         private enum MouseInput { Enabled, Disabled, Enter, Exit, Down, Deselected, Selected, }
-        private MouseInput input = MouseInput.Enabled;
         private bool curInteractable;
 
         private void OnEnable()
@@ -19,12 +18,12 @@ namespace UIFiniteStateMachine
             curInteractable = target.interactable;
             if (!curInteractable)
             {
-                input = MouseInput.Disabled;
+                HandleInput(MouseInput.Disabled);
                 return;
             }
             if (target.isOn)
             {
-                input = MouseInput.Selected;
+                HandleInput(MouseInput.Selected);
             }
         }
 
@@ -33,8 +32,13 @@ namespace UIFiniteStateMachine
             Debug.Log($"{gameObject.name} State:{state}");
             if (CheckInteractableChange())
             {
-                input = curInteractable ? MouseInput.Enabled : MouseInput.Disabled;
+                var input = curInteractable ? MouseInput.Enabled : MouseInput.Disabled;
+                HandleInput(input);
             }
+        }
+
+        private void HandleInput(MouseInput input)
+        {
             switch (state)
             {
                 case State.Normal:
@@ -109,22 +113,23 @@ namespace UIFiniteStateMachine
         }
         public void OnPointerDown(PointerEventData eventData)
         {
-            input = MouseInput.Down;
+            HandleInput(MouseInput.Down);
         }
 
         public void OnValueChanged(bool isSelected)
         {
-            input = isSelected ? MouseInput.Selected : MouseInput.Deselected;
+            var input = isSelected ? MouseInput.Selected : MouseInput.Deselected;
+            HandleInput(input);
         }
 
         public void OnPointerEnter(PointerEventData eventData)
         {
-            input = MouseInput.Enter;
+            HandleInput(MouseInput.Enter);
         }
 
         public void OnPointerExit(PointerEventData eventData)
         {
-            input = MouseInput.Exit;
+            HandleInput(MouseInput.Exit);
         }
     }
 }
