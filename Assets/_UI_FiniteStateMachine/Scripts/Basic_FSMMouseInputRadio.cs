@@ -32,6 +32,7 @@ namespace UIFiniteStateMachine
             Debug.Log($"{gameObject.name} State:{state}");
             if (CheckInteractableChange())
             {
+                curInteractable = target.interactable;
                 var input = curInteractable ? MouseInput.Enabled : MouseInput.Disabled;
                 HandleInput(input);
             }
@@ -106,11 +107,11 @@ namespace UIFiniteStateMachine
         {
             if (curInteractable != target.interactable)
             {
-                curInteractable = target.interactable;
                 return true;
             }
             return false;
         }
+
         public void OnPointerDown(PointerEventData eventData)
         {
             HandleInput(MouseInput.Down);

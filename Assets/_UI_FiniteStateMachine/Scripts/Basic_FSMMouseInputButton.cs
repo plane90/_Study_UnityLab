@@ -2,6 +2,8 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
+namespace UIFiniteStateMachine
+{
     public class Basic_FSMMouseInputButton : MonoBehaviour, IPointerClickHandler, IPointerDownHandler, IPointerEnterHandler, IPointerExitHandler
     {
         public Button target;
@@ -26,6 +28,7 @@ using UnityEngine.UI;
         {
             if (CheckInteractableChange())
             {
+                curInteractable = target.interactable;
                 var input = curInteractable ? MouseInput.Enabled : MouseInput.Disabled;
                 HandleInput(input);
             }
@@ -86,7 +89,6 @@ using UnityEngine.UI;
         {
             if (curInteractable != target.interactable)
             {
-                curInteractable = target.interactable;
                 return true;
             }
             return false;
