@@ -30,15 +30,18 @@ namespace UIFiniteStateMachine
         private void OnEnable()
         {
             image = GetComponent<Image>();
+            fsm.Register(HandleInput);
         }
 
-        private void Update()
+        private void OnDisable()
         {
-            if (image == null)
-            {
-                return;
-            }
-            switch (fsm.state)
+            image = GetComponent<Image>();
+            fsm.Unregister(HandleInput);
+        }
+
+        private void HandleInput(FSMUIBehaviour.State state)
+        {
+            switch (state)
             {
                 case FSMUIBehaviour.State.Normal:
                     UpdateSprite(normal);
@@ -54,8 +57,6 @@ namespace UIFiniteStateMachine
                     break;
                 case FSMUIBehaviour.State.Selected:
                     UpdateSprite(selected);
-                    break;
-                default:
                     break;
             }
         }

@@ -9,8 +9,6 @@ namespace UIFiniteStateMachine
     public class FSMRadioButton : FSMUIBehaviour, IPointerClickHandler, IPointerDownHandler, IPointerEnterHandler, IPointerExitHandler
     {
         public FSMRadioButtonGroup group;
-        public bool interactable = true;
-        public bool isOn = false;
         [System.Serializable] public class UnityEventBool : UnityEvent<bool> { };
         public UnityEventBool onValueChanged;
         public UnityEvent onSelected;
@@ -20,13 +18,82 @@ namespace UIFiniteStateMachine
         private enum Input { Enabled, Disabled, Enter, Exit, Down, NonSelected, Selected, Deselected, }
         private bool curInteractable;
         private bool curIsOn = false;
+        [SerializeField] private bool interactable = true;
+        [SerializeField] private bool isOn = false;
+
+        public bool Interactable
+        {
+            get => interactable;
+            set
+            {
+                interactable = value;
+                if (CheckInteractableChange())
+                {
+                    curInteractable = value;
+                    if (!curInteractable)
+                    {
+                        onDimmed?.Invoke();
+                    }
+                    var input = curInteractable ? Input.Enabled : Input.Disabled;
+                    HandleInput(input);
+                }
+            }
+        }
+
+        public bool IsOn
+        {
+            get => isOn;
+            set
+            {
+                if (!Interactable)
+                {
+                    return;
+                }
+                isOn = value;
+                if (isOn)
+                {
+                    onSelected?.Invoke();
+                    HandleInput(Input.Selected);
+                    if (CheckIsOnChange())
+                    {
+                        curIsOn = isOn;
+                        onValueChanged?.Invoke(curIsOn);
+                    }
+                }
+                else
+                {
+                    onDeselected?.Invoke();
+                    if (CheckIsOnChange())
+                    {
+                        curIsOn = IsOn;
+                        onValueChanged?.Invoke(curIsOn);
+                        HandleInput(Input.Deselected);
+                    }
+                    else
+                    {
+                        HandleInput(Input.NonSelected);
+                    }
+                }
+            }
+        }
+
+        [MyBox.ButtonMethod]
+        public void ToggleInteractable()
+        {
+            Interactable = !Interactable;
+        }
+        [MyBox.ButtonMethod]
+        public void ToggleIsOn()
+        {
+            IsOn = !IsOn;
+        }
 
         private void OnEnable()
         {
             group.Register(this);
             curIsOn = isOn;
 
-            curInteractable = interactable;
+            curInteractable = Interactable;
             if (!curInteractable)
             {
                 HandleInput(Input.Disabled);
@@ -39,24 +106,6 @@ namespace UIFiniteStateMachine
             else
             {
                 HandleInput(Input.Deselected);
-            }
-        }
-
-        private void Update()
-        {
-            if (CheckInteractableChange())
-            {
-                curInteractable = interactable;
-                if (!curInteractable)
-                {
-                    onDimmed.Invoke();
-                }
-                var input = curInteractable ? Input.Enabled : Input.Disabled;
-                HandleInput(input);
-            }
-            if (CheckIsOnChange())
-            {
-                group.Notify(GetInstanceID());
             }
         }
 
@@ -127,6 +176,7 @@ namespace UIFiniteStateMachine
                     }
                     break;
             }
+            Broadcast(state);
         }
 
         public void OnClickedTo(int id)
@@ -137,29 +187,11 @@ namespace UIFiniteStateMachine
             }
             if (id.Equals(GetInstanceID()))
             {
-                isOn = true;
-                onSelected?.Invoke();
-                if (CheckIsOnChange())
-                {
-                    curIsOn = isOn;
-                    onValueChanged?.Invoke(curIsOn);
-                }
-                HandleInput(Input.Selected);
+                IsOn = true;
             }
             else
             {
-                isOn = false;
-                onDeselected?.Invoke();
-                if (CheckIsOnChange())
-                {
-                    curIsOn = isOn;
-                    onValueChanged?.Invoke(curIsOn);
-                    HandleInput(Input.Deselected);
-                }
-                else
-                {
-                    HandleInput(Input.NonSelected);
-                }
+                IsOn = false;
             }
         }
 

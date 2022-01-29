@@ -15,9 +15,9 @@ namespace UIFiniteStateMachine
         {
             foreach (var radioButton in radioButtons)
             {
-                radioButton.isOn = false;
+                radioButton.IsOn = false;
             }
-            radioButtons.OrderBy(e => e.transform.GetSiblingIndex()).First().isOn = true;
+            radioButtons.OrderBy(e => e.transform.GetSiblingIndex()).First().IsOn = true;
         }
 
         public void Notify(int id)
