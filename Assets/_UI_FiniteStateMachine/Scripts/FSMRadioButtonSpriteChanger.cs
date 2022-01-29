@@ -5,9 +5,9 @@ using UnityEngine.UI;
 
 namespace UIFiniteStateMachine
 {
-    public class FSMSpriteChanger : MonoBehaviour
+    public class FSMRadioButtonSpriteChanger : MonoBehaviour
     {
-        public FSMUIBehaviour fsm;
+        public FSMRadioButton fsm;
         public Image image;
         public bool enableColorChange;
         [System.Serializable]
@@ -40,19 +40,19 @@ namespace UIFiniteStateMachine
             }
             switch (fsm.state)
             {
-                case FSMUIBehaviour.State.Normal:
+                case FSMRadioButton.State.Normal:
                     UpdateSprite(normal);
                     break;
-                case FSMUIBehaviour.State.Hover:
+                case FSMRadioButton.State.Hover:
                     UpdateSprite(hover);
                     break;
-                case FSMUIBehaviour.State.Pressed:
+                case FSMRadioButton.State.Pressed:
                     UpdateSprite(pressed);
                     break;
-                case FSMUIBehaviour.State.Dimmed:
+                case FSMRadioButton.State.Dimmed:
                     UpdateSprite(dimmed);
                     break;
-                case FSMUIBehaviour.State.Selected:
+                case FSMRadioButton.State.Selected:
                     UpdateSprite(selected);
                     break;
                 default:

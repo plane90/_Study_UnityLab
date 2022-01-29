@@ -11,7 +11,6 @@ namespace UIFiniteStateMachine
         public State state = State.Normal;
 
         private enum MouseInput { Enabled, Disabled, Enter, Exit, Down, Click, }
-        private MouseInput input = MouseInput.Enabled;
         private bool curInteractable;
 
         private void OnEnable()
@@ -19,18 +18,23 @@ namespace UIFiniteStateMachine
             curInteractable = target.interactable;
             if (!curInteractable)
             {
-                input = MouseInput.Disabled;
+                HandleInput(MouseInput.Disabled);
                 return;
             }
-            input = MouseInput.Enabled;
+            HandleInput(MouseInput.Enabled);
         }
 
         private void Update()
         {
             if (CheckInteractableChange())
             {
-                input = curInteractable ? MouseInput.Enabled : MouseInput.Disabled;
+                var input = curInteractable ? MouseInput.Enabled : MouseInput.Disabled;
+                HandleInput(input);
             }
+        }
+
+        private void HandleInput(MouseInput input)
+        {
             switch (state)
             {
                 case State.Normal:
@@ -92,22 +96,22 @@ namespace UIFiniteStateMachine
 
         public void OnPointerClick(PointerEventData eventData)
         {
-            input = MouseInput.Click;
+            HandleInput(MouseInput.Click);
         }
 
         public void OnPointerDown(PointerEventData eventData)
         {
-            input = MouseInput.Down;
+            HandleInput(MouseInput.Down);
         }
 
         public void OnPointerEnter(PointerEventData eventData)
         {
-            input = MouseInput.Enter;
+            HandleInput(MouseInput.Enter);
         }
 
         public void OnPointerExit(PointerEventData eventData)
         {
-            input = MouseInput.Exit;
+            HandleInput(MouseInput.Exit);
         }
     }
 }
