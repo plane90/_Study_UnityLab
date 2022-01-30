@@ -8,7 +8,7 @@ namespace UIFiniteStateMachine
 {
     public class FSMButton : FSMUIBehaviour, IPointerClickHandler, IPointerDownHandler, IPointerEnterHandler, IPointerExitHandler
     {
-        public UnityEvent onClicked;
+        public UnityEvent onClick;
         public UnityEvent onEnabled;
         public UnityEvent onDimmed;
 
@@ -84,7 +84,7 @@ namespace UIFiniteStateMachine
                     }
                     else if (input.Equals(Input.Click))
                     {
-                        onClicked?.Invoke();
+                        onClick?.Invoke();
                         state = State.Hover;
                     }
                     else if (input.Equals(Input.Exit))
