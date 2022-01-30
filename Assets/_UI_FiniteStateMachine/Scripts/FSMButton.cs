@@ -25,12 +25,15 @@ namespace UIFiniteStateMachine
                 if (CheckInteractableChange())
                 {
                     curInteractable = value;
-                    if (!curInteractable)
+                    if (Interactable)
                     {
+                        HandleInput(Input.Enabled);
+                    }
+                    else
+                    {
+                        HandleInput(Input.Disabled);
                         onDimmed?.Invoke();
                     }
-                    var input = curInteractable ? Input.Enabled : Input.Disabled;
-                    HandleInput(input);
                 }
             }
         }
