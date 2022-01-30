@@ -13,6 +13,7 @@ namespace UIFiniteStateMachine
 
         private enum Input { Enabled, Disabled, Enter, NorExit, SelExit, Down, Deselected, Selected, }
         private bool curInteractable = true;
+        private bool curIsOn = true;
 
         [System.Serializable] public class UnityEventBool : UnityEvent<bool> { };
         public UnityEventBool onValueChanged;
@@ -52,7 +53,11 @@ namespace UIFiniteStateMachine
                     return;
                 }
                 isOn = value;
-                onValueChanged?.Invoke(IsOn);
+                if (CheckIsOnChange())
+                {
+                    curIsOn = IsOn;
+                    onValueChanged?.Invoke(IsOn);
+                }
                 if (IsOn)
                 {
                     onSelected?.Invoke();
@@ -80,11 +85,21 @@ namespace UIFiniteStateMachine
         private void OnEnable()
         {
             curInteractable = Interactable;
+            curIsOn = IsOn;
         }
 
         private bool CheckInteractableChange()
         {
             if (!curInteractable.Equals(Interactable))
+            {
+                return true;
+            }
+            return false;
+        }
+        
+        private bool CheckIsOnChange()
+        {
+            if (!curIsOn.Equals(IsOn))
             {
                 return true;
             }
