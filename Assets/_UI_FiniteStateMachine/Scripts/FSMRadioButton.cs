@@ -49,31 +49,7 @@ namespace UIFiniteStateMachine
                 {
                     return;
                 }
-                isOn = value;
-                if (IsOn)
-                {
-                    onSelected?.Invoke();
-                    HandleInput(Input.Selected);
-                    if (CheckIsOnChange())
-                    {
-                        curIsOn = IsOn;
-                        onValueChanged?.Invoke(curIsOn);
-                    }
-                }
-                else
-                {
-                    onDeselected?.Invoke();
-                    if (CheckIsOnChange())
-                    {
-                        curIsOn = IsOn;
-                        onValueChanged?.Invoke(curIsOn);
-                        HandleInput(Input.Deselected);
-                    }
-                    else
-                    {
-                        HandleInput(Input.NonSelected);
-                    }
-                }
+                group.Notify(GetInstanceID());
             }
         }
 
@@ -187,11 +163,29 @@ namespace UIFiniteStateMachine
             }
             if (id.Equals(GetInstanceID()))
             {
-                IsOn = true;
+                isOn = true;
+                onSelected?.Invoke();
+                HandleInput(Input.Selected);
+                if (CheckIsOnChange())
+                {
+                    curIsOn = IsOn;
+                    onValueChanged?.Invoke(curIsOn);
+                }
             }
             else
             {
-                IsOn = false;
+                isOn = false;
+                onDeselected?.Invoke();
+                if (CheckIsOnChange())
+                {
+                    curIsOn = IsOn;
+                    onValueChanged?.Invoke(curIsOn);
+                    HandleInput(Input.Deselected);
+                }
+                else
+                {
+                    HandleInput(Input.NonSelected);
+                }
             }
         }
 
