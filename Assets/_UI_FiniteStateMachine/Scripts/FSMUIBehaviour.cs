@@ -5,7 +5,7 @@ namespace UIFiniteStateMachine
 {
     public class FSMUIBehaviour : MonoBehaviour
     {
-        public enum State { Normal, Hover, Pressed, Dimmed, Selected, }
+        public enum State { Normal, Hover, Pressed, Selected, Dimmed, }
         [MyBox.ReadOnly] public State state;
         public event Action<State> broadcastHandler;
 

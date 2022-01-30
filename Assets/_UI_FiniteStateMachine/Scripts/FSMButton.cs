@@ -55,7 +55,7 @@ namespace UIFiniteStateMachine
                     {
                         state = State.Hover;
                     }
-                    if (input.Equals(Input.Disabled))
+                    else if (input.Equals(Input.Disabled))
                     {
                         state = State.Dimmed;
                     }
@@ -79,12 +79,12 @@ namespace UIFiniteStateMachine
                     {
                         state = State.Dimmed;
                     }
-                    if (input.Equals(Input.Click))
+                    else if (input.Equals(Input.Click))
                     {
                         onClicked?.Invoke();
                         state = State.Hover;
                     }
-                    if (input.Equals(Input.Exit))
+                    else if (input.Equals(Input.Exit))
                     {
                         state = State.Normal;
                     }

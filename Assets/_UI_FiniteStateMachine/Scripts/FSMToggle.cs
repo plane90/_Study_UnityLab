@@ -6,20 +6,19 @@ using UnityEngine.EventSystems;
 
 namespace UIFiniteStateMachine
 {
-    public class FSMRadioButton : FSMUIBehaviour, IPointerClickHandler, IPointerDownHandler, IPointerEnterHandler, IPointerExitHandler
+    public class FSMToggle : FSMUIBehaviour, IPointerClickHandler, IPointerDownHandler, IPointerEnterHandler, IPointerExitHandler
     {
-        public FSMRadioButtonGroup group;
+        [SerializeField] private bool interactable = true;
+        [SerializeField] private bool isOn = true;
+
+        private enum Input { Enabled, Disabled, Enter, NorExit, SelExit, Down, Deselected, Selected, }
+        private bool curInteractable = true;
+
         [System.Serializable] public class UnityEventBool : UnityEvent<bool> { };
         public UnityEventBool onValueChanged;
         public UnityEvent onSelected;
         public UnityEvent onDeselected;
         public UnityEvent onDimmed;
-
-        private enum Input { Enabled, Disabled, Enter, Exit, Down, NonSelected, Selected, Deselected, }
-        private bool curInteractable;
-        private bool curIsOn = false;
-        [SerializeField] private bool interactable = true;
-        [SerializeField] private bool isOn = false;
 
         public bool Interactable
         {
@@ -29,13 +28,16 @@ namespace UIFiniteStateMachine
                 interactable = value;
                 if (CheckInteractableChange())
                 {
-                    curInteractable = value;
-                    if (!curInteractable)
+                    curInteractable = Interactable;
+                    if (Interactable)
                     {
+                        HandleInput(Input.Enabled);
+                    }
+                    else
+                    {
+                        HandleInput(Input.Disabled);
                         onDimmed?.Invoke();
                     }
-                    var input = curInteractable ? Input.Enabled : Input.Disabled;
-                    HandleInput(input);
                 }
             }
         }
@@ -49,7 +51,18 @@ namespace UIFiniteStateMachine
                 {
                     return;
                 }
-                group.Notify(GetInstanceID());
+                isOn = value;
+                onValueChanged?.Invoke(IsOn);
+                if (IsOn)
+                {
+                    onSelected?.Invoke();
+                    HandleInput(Input.Selected);
+                }
+                else
+                {
+                    onDeselected?.Invoke();
+                    HandleInput(Input.Deselected);
+                }
             }
         }
 
@@ -66,23 +79,16 @@ namespace UIFiniteStateMachine
 
         private void OnEnable()
         {
-            group.Register(this);
-            curIsOn = IsOn;
-
             curInteractable = Interactable;
-            if (!curInteractable)
+        }
+
+        private bool CheckInteractableChange()
+        {
+            if (!curInteractable.Equals(Interactable))
             {
-                HandleInput(Input.Disabled);
-                return;
+                return true;
             }
-            if (IsOn)
-            {
-                HandleInput(Input.Selected);
-            }
-            else
-            {
-                HandleInput(Input.Deselected);
-            }
+            return false;
         }
 
         private void HandleInput(Input input)
@@ -90,31 +96,31 @@ namespace UIFiniteStateMachine
             switch (state)
             {
                 case State.Normal:
-                    if (input.Equals(Input.Enter))
-                    {
-                        state = State.Hover;
-                    }
-                    else if (input.Equals(Input.Disabled))
+                    if (input.Equals(Input.Disabled))
                     {
                         state = State.Dimmed;
                     }
-                    else if (input.Equals(Input.Selected))
+                    else if (input.Equals(Input.Enter))
                     {
-                        state = State.Selected;
+                        state = State.Hover;
                     }
                     break;
                 case State.Hover:
-                    if (input.Equals(Input.Exit))
+                    if (input.Equals(Input.Disabled))
                     {
-                        state = State.Normal;
+                        state = State.Dimmed;
                     }
                     else if (input.Equals(Input.Down))
                     {
                         state = State.Pressed;
                     }
-                    else if (input.Equals(Input.Disabled))
+                    else if (input.Equals(Input.NorExit))
                     {
-                        state = State.Dimmed;
+                        state = State.Normal;
+                    }
+                    else if (input.Equals(Input.SelExit))
+                    {
+                        state = State.Selected;
                     }
                     break;
                 case State.Pressed:
@@ -122,15 +128,19 @@ namespace UIFiniteStateMachine
                     {
                         state = State.Dimmed;
                     }
-                    else if (input.Equals(Input.Exit))
+                    else if (input.Equals(Input.NorExit))
                     {
                         state = State.Normal;
+                    }
+                    else if (input.Equals(Input.SelExit))
+                    {
+                        state = State.Selected;
                     }
                     else if (input.Equals(Input.Selected))
                     {
                         state = State.Selected;
                     }
-                    else if (input.Equals(Input.NonSelected))
+                    else if (input.Equals(Input.Deselected))
                     {
                         state = State.Hover;
                     }
@@ -140,9 +150,13 @@ namespace UIFiniteStateMachine
                     {
                         state = State.Dimmed;
                     }
-                    else if (input.Equals(Input.Deselected))
+                    else if (input.Equals(Input.Enter))
                     {
-                        state = State.Normal;
+                        state = State.Hover;
+                    }
+                    else if (input.Equals(Input.Down))
+                    {
+                        state = State.Pressed;
                     }
                     break;
                 case State.Dimmed:
@@ -155,64 +169,9 @@ namespace UIFiniteStateMachine
             Broadcast(state);
         }
 
-        public void OnClickedTo(int id)
-        {
-            if (!curInteractable)
-            {
-                return;
-            }
-            if (id.Equals(GetInstanceID()))
-            {
-                isOn = true;
-                onSelected?.Invoke();
-                HandleInput(Input.Selected);
-                if (CheckIsOnChange())
-                {
-                    curIsOn = IsOn;
-                    onValueChanged?.Invoke(curIsOn);
-                }
-            }
-            else
-            {
-                isOn = false;
-                onDeselected?.Invoke();
-                if (CheckIsOnChange())
-                {
-                    curIsOn = IsOn;
-                    onValueChanged?.Invoke(curIsOn);
-                    HandleInput(Input.Deselected);
-                }
-                else
-                {
-                    HandleInput(Input.NonSelected);
-                }
-            }
-        }
-
-        private bool CheckInteractableChange()
-        {
-            if (curInteractable != Interactable)
-            {
-                return true;
-            }
-            return false;
-        }
-        private bool CheckIsOnChange()
-        {
-            if (curIsOn != IsOn)
-            {
-                return true;
-            }
-            return false;
-        }
-
         public void OnPointerClick(PointerEventData eventData)
         {
-            if (!curInteractable)
-            {
-                return;
-            }
-            group.Notify(GetInstanceID());
+            IsOn = !IsOn;
         }
 
         public void OnPointerDown(PointerEventData eventData)
@@ -227,7 +186,7 @@ namespace UIFiniteStateMachine
 
         public void OnPointerExit(PointerEventData eventData)
         {
-            HandleInput(Input.Exit);
+            HandleInput(IsOn ? Input.SelExit : Input.NorExit);
         }
     }
 }
