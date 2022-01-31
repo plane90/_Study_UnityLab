@@ -11,16 +11,17 @@ namespace UIFiniteStateMachine
         public Image image;
         public bool enableColorChange;
         [System.Serializable]
-        public class SpriteAndColor
+        public class Element
         {
             public Sprite sprite;
+            [MyBox.ConditionalField(nameof(enableColorChange))]
             public Color color = new Color(1f, 1f, 1f, 1f);
         }
-        public SpriteAndColor normal;
-        public SpriteAndColor hover;
-        public SpriteAndColor pressed;
-        public SpriteAndColor selected;
-        public SpriteAndColor dimmed;
+        public Element normal;
+        public Element hover;
+        public Element pressed;
+        public Element selected;
+        public Element dimmed;
 
         private void OnValidate()
         {
@@ -61,7 +62,7 @@ namespace UIFiniteStateMachine
             }
         }
 
-        private void UpdateSprite(SpriteAndColor element)
+        private void UpdateSprite(Element element)
         {
             if (image != null)
             {
