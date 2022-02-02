@@ -10,11 +10,11 @@ namespace UIFiniteStateMachine
         public FSMUIBehaviour fsm;
         public Image image;
         public bool enableColorChange;
+
         [System.Serializable]
         public class Element
         {
             public Sprite sprite;
-            [MyBox.ConditionalField(nameof(enableColorChange))]
             public Color color = new Color(1f, 1f, 1f, 1f);
         }
         public Element normal;

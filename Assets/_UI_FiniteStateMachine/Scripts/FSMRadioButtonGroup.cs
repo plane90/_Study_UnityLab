@@ -8,7 +8,7 @@ namespace UIFiniteStateMachine
 {
     public class FSMRadioButtonGroup : MonoBehaviour
     {
-        private event Action<int> broadcastHandler;
+        private event Action<int> onNotify;
         private List<FSMRadioButton> radioButtons = new List<FSMRadioButton>();
 
         private void Start()
@@ -22,7 +22,7 @@ namespace UIFiniteStateMachine
 
         public void Notify(int id)
         {
-            broadcastHandler?.Invoke(id);
+            onNotify?.Invoke(id);
         }
 
         public void Register(FSMRadioButton radioButton)
@@ -30,7 +30,7 @@ namespace UIFiniteStateMachine
             if (!radioButtons.Contains(radioButton))
             {
                 radioButtons.Add(radioButton);
-                broadcastHandler += radioButton.OnClickedTo;
+                onNotify += radioButton.OnClickedTo;
             }
         }
 
@@ -39,7 +39,7 @@ namespace UIFiniteStateMachine
             if (radioButtons.Contains(radioButton))
             {
                 radioButtons.Remove(radioButton);
-                broadcastHandler -= radioButton.OnClickedTo;
+                onNotify -= radioButton.OnClickedTo;
             }
         }
     }

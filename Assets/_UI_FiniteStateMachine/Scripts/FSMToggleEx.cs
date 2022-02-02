@@ -6,7 +6,7 @@ using UnityEngine.EventSystems;
 
 namespace UIFiniteStateMachine
 {
-    public class FSMToggle : FSMUIBehaviour, IPointerClickHandler, IPointerDownHandler, IPointerEnterHandler, IPointerExitHandler
+    public class FSMToggleEx : FSMUIBehaviour, IPointerClickHandler, IPointerDownHandler, IPointerEnterHandler, IPointerExitHandler
     {
         [SerializeField] private bool interactable = true;
         [SerializeField] private bool isOn = true;
@@ -16,7 +16,7 @@ namespace UIFiniteStateMachine
         private bool curInteractable = true;
         private bool curIsOn = true;
 
-        
+
         [System.Serializable] public class UnityEventBool : UnityEvent<bool> { };
         public UnityEventBool onValueChanged;
         public UnityEventBool onValueChangedInverse;
@@ -93,10 +93,32 @@ namespace UIFiniteStateMachine
             IsOn = !IsOn;
         }
 
-        private void OnEnable()
+        private void Awake()
         {
             curInteractable = Interactable;
             curIsOn = IsOn;
+            Debug.Log($"{gameObject.name}: OnEnable");
+            if (!curInteractable)
+            {
+                HandleInput(Input.Disabled);
+                return;
+            }
+            if (IsOn)
+            {
+                HandleInput(Input.Selected);
+            }
+            else
+            {
+                HandleInput(Input.Deselected);
+            }
+        }
+
+        // SpriteChanger의 OnEnable과 레이스컨디션 발생
+        // 서로 다른 독립된 컴포넌트끼리 순서 동기화 불가
+        private void OnEnable()
+        {
+            //Broadcast(state);
+            //Broadcast(state, isOn);
         }
 
         private bool CheckInteractableChange()
@@ -129,6 +151,10 @@ namespace UIFiniteStateMachine
                     else if (input.Equals(Input.Enter))
                     {
                         state = State.Hover;
+                    }
+                    else if (input.Equals(Input.Selected))
+                    {
+                        state = State.Selected;
                     }
                     break;
                 case State.Hover:
@@ -192,7 +218,9 @@ namespace UIFiniteStateMachine
                     }
                     break;
             }
-            Broadcast(state);
+            // OnEnable과 RaceCondtion 발생. 서로 다른 독립된 컴포넌트끼리 순서 동기화 불가
+            //Broadcast(state);
+            //Broadcast(state, isOn);
         }
 
         public void OnPointerClick(PointerEventData eventData)
