@@ -284,6 +284,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   localSpacePosition: {x: 0, y: 0, z: 0}
   worldSpacePosition: {x: 0, y: 0, z: 0}
+  localSpacePositionViaInverse: {x: 0, y: 0, z: 0}
   cube: {fileID: 0}
 --- !u!1 &365990005
 GameObject:
@@ -446,6 +447,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   localSpacePosition: {x: 0, y: 0, z: 0}
   worldSpacePosition: {x: 0, y: 0, z: 0}
+  localSpacePositionViaInverse: {x: 0, y: 0, z: 0}
   cube: {fileID: 477104323}
 --- !u!1 &396407891
 GameObject:
@@ -581,7 +583,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e4b2d26b759331d4797ba98d4d5543c6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sr: {fileID: 0}
+  sr: {fileID: 396407894}
 --- !u!1 &477104323
 GameObject:
   m_ObjectHideFlags: 0
@@ -838,6 +840,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   localSpacePosition: {x: 0, y: 0, z: 0}
   worldSpacePosition: {x: 0, y: 0, z: 0}
+  localSpacePositionViaInverse: {x: 0, y: 0, z: 0}
   cube: {fileID: 0}
 --- !u!1 &967025101
 GameObject:
@@ -1000,6 +1003,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   localSpacePosition: {x: 0, y: 0, z: 0}
   worldSpacePosition: {x: 0, y: 0, z: 0}
+  localSpacePositionViaInverse: {x: 0, y: 0, z: 0}
   cube: {fileID: 0}
 --- !u!1 &1033585140
 GameObject:
@@ -1252,6 +1256,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   localSpacePosition: {x: 0, y: 0, z: 0}
   worldSpacePosition: {x: 0, y: 0, z: 0}
+  localSpacePositionViaInverse: {x: 0, y: 0, z: 0}
   cube: {fileID: 0}
 --- !u!1 &1219576163
 GameObject:
@@ -1573,6 +1578,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   localSpacePosition: {x: 0, y: 0, z: 0}
   worldSpacePosition: {x: 0, y: 0, z: 0}
+  localSpacePositionViaInverse: {x: 0, y: 0, z: 0}
   cube: {fileID: 0}
 --- !u!1 &1302813014
 GameObject:
@@ -1735,6 +1741,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   localSpacePosition: {x: 0, y: 0, z: 0}
   worldSpacePosition: {x: 0, y: 0, z: 0}
+  localSpacePositionViaInverse: {x: 0, y: 0, z: 0}
   cube: {fileID: 0}
 --- !u!1 &1367402371
 GameObject:
@@ -2080,6 +2087,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   localSpacePosition: {x: 0, y: 0, z: 0}
   worldSpacePosition: {x: 0, y: 0, z: 0}
+  localSpacePositionViaInverse: {x: 0, y: 0, z: 0}
   cube: {fileID: 0}
 --- !u!1 &2021230200
 GameObject:
