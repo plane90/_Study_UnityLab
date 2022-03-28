@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,6 +12,10 @@ namespace UIFiniteStateMachine
         private void OnEnable()
         {
             target.isOn = false;
+            //var a = GetComponentsInParent<Light>().FirstOrDefault();
+            var a = GetComponentsInParent<Light>().Length;
+            Debug.Log("null but no error!");
+
         }
 
         public void OnValueChanged(bool value)
