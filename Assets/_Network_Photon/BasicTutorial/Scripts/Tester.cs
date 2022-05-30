@@ -1,5 +1,6 @@
 using Photon.Pun;
 using Photon.Realtime;
+using UnityEditor;
 using UnityEngine;
 
 namespace Network_Photon.BasicTutorial
@@ -43,6 +44,13 @@ namespace Network_Photon.BasicTutorial
         public void IsConnected()
         {
             Debug.Log($"Is Connected {PhotonNetwork.IsConnected}");
+        }
+
+        [MyBox.ButtonMethod]
+        public void ConnectOnPremise()
+        {
+            // OnPremise 사용 시 SetAuth를 통해 UserId를 초기화해야 JoinRoom할 수 있다.
+            PhotonNetwork.ConnectToMaster("127.0.0.1", 5055, "");
         }
 
     }
