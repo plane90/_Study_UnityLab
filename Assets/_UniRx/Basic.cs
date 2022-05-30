@@ -16,12 +16,12 @@ namespace _UniRx
             // Subject가 IObservable을 통해 리스너를 등록한다.
             IObservable<int> trigger = subject;
             // Subscribe의 인자로 옵저버를 전달 받는다.
-            trigger.Subscribe(x => Debug.Log($"a:{x}"));
-            trigger.Subscribe(x => Debug.Log($"b:{x}"));
+            trigger.Subscribe(x => Debug.Log($"a{x}"));
+            trigger.Subscribe(x => Debug.Log($"b{x}"));
             
             // Subject가 IObserver를 통해 리스너를 참조 및 통지한다.
             IObserver<int> listeners = subject;
-            // OnNext로 순회 및 다음 리스너를 참조한다. 
+            // OnNext의 인자로 메시지를 전달하며 실행한다.
             listeners.OnNext(3);
         }
     }
