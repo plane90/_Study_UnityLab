@@ -1,29 +1,30 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+using WebSocketSharp;
 
 public class Tester : MonoBehaviour
 {
-    private IEnumerator Start()
+    public Button button;
+    public Tester tester;
+
+    [MyScene] public string myScene;
+
+    public string str = "abc";
+    private void Start()
     {
+        tester ??= GetComponent<Tester>();
         Debug.Log("Start");
-        yield return StartCoroutine(Coroutine());
         Debug.Log("End");
     }
 
-    public IEnumerator Coroutine()
+    [MyBox.ButtonMethod()]
+    public void Test()
     {
-        var elapsed = 0f;
-        while (true)
-        {
-            if (elapsed > 5f)
-            {
-                yield break;
-            }
-
-            elapsed += Time.deltaTime;
-            yield return null;
-        }
+        SceneManager.LoadSceneAsync(myScene, LoadSceneMode.Additive);
     }
 }
