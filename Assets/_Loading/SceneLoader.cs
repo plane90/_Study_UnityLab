@@ -4,60 +4,68 @@ using SceneReference;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class SceneLoader : MonoBehaviour
+namespace Loading
 {
-    private static SceneLoader _instance;
-    public static SceneLoader Instance
+    public class SceneLoader : MonoBehaviour
     {
-        get
-        {
-            _instance ??= FindObjectOfType<SceneLoader>();
-            _instance ??= new GameObject().AddComponent<SceneLoader>();
-            DontDestroyOnLoad(_instance);
-            return _instance;
-        }
-    }
-    
-    public void LoadScene(IEnumerable<ScenePath> scenePaths, Sprite loadingContext, bool showLoadingDisplay)
-    {
-        StartCoroutine(LoadSceneAsync(scenePaths, loadingContext, showLoadingDisplay));
-    }
+        private static SceneLoader _instance;
 
-    private IEnumerator LoadSceneAsync(IEnumerable<ScenePath> scenePaths, Sprite loadingContext, bool showLoadingDisplay)
-    {
-        LoadingDisplay ld = null;
-        if (showLoadingDisplay)
+        public static SceneLoader Instance
         {
-            ld = (Instantiate(Resources.Load("_Loading/LoadingDisplay")) as GameObject)?.GetComponent<LoadingDisplay>();
-            ld.SetContext(loadingContext);
-            ld.Show();
-            DontDestroyOnLoad(ld);
+            get
+            {
+                _instance ??= FindObjectOfType<SceneLoader>();
+                _instance ??= new GameObject().AddComponent<SceneLoader>();
+                DontDestroyOnLoad(_instance);
+                return _instance;
+            }
         }
 
-        var e = scenePaths.GetEnumerator();
-        e.MoveNext();
-        yield return StartCoroutine(ProceedLoad(e.Current, LoadSceneMode.Single));
-        
-        while (e.MoveNext())
+        public void LoadScene(IEnumerable<ScenePath> scenePaths, Sprite loadingContext, bool showLoadingDisplay)
         {
-            yield return StartCoroutine(ProceedLoad(e.Current, LoadSceneMode.Additive));
+            StartCoroutine(LoadSceneAsync(scenePaths, loadingContext, showLoadingDisplay));
         }
 
-        if (showLoadingDisplay)
+        private IEnumerator LoadSceneAsync(IEnumerable<ScenePath> scenePaths, Sprite loadingContext,
+            bool showLoadingDisplay)
         {
-            ld?.Hide(1f);
-        }
-        Destroy(gameObject, 1f);
-    }
+            LoadingDisplay ld = null;
+            if (showLoadingDisplay)
+            {
+                ld = (Instantiate(Resources.Load("_Loading/LoadingDisplay")) as GameObject)
+                    ?.GetComponent<LoadingDisplay>();
+                ld.SetContext(loadingContext);
+                ld.Show();
+                DontDestroyOnLoad(ld);
+            }
 
-    private IEnumerator ProceedLoad(ScenePath path, LoadSceneMode mode)
-    {
-        var asyncOperation = SceneManager.LoadSceneAsync(path, mode);
-        asyncOperation.allowSceneActivation = false;
-        while (asyncOperation.progress > 0.9)
-        {
-            yield return null;
+            var e = scenePaths.GetEnumerator();
+            e.MoveNext();
+            yield return StartCoroutine(ProceedLoad(e.Current, LoadSceneMode.Single));
+
+            while (e.MoveNext())
+            {
+                yield return StartCoroutine(ProceedLoad(e.Current, LoadSceneMode.Additive));
+            }
+
+            if (showLoadingDisplay)
+            {
+                ld?.Hide(1f);
+            }
+
+            Destroy(gameObject, 1f);
         }
-        asyncOperation.allowSceneActivation = true;
+
+        private IEnumerator ProceedLoad(ScenePath path, LoadSceneMode mode)
+        {
+            var asyncOperation = SceneManager.LoadSceneAsync(path, mode);
+            asyncOperation.allowSceneActivation = false;
+            while (asyncOperation.progress > 0.9)
+            {
+                yield return null;
+            }
+
+            asyncOperation.allowSceneActivation = true;
+        }
     }
 }
