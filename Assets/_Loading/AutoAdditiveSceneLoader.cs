@@ -2,9 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using SceneReference;
-using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+#if UNITY_EDITOR
+using UnityEditor.SceneManagement;
+#endif
 
 namespace Loading
 {
@@ -28,7 +30,9 @@ namespace Loading
 
             foreach (var scenePath in _scenePaths.Where(x => !string.IsNullOrEmpty(x)))
             {
+#if UNITY_EDITOR
                 EditorSceneManager.OpenScene(scenePath, OpenSceneMode.Additive);
+#endif
             }
         }
 
