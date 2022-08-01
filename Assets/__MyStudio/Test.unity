@@ -200,12 +200,27 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sceneRef:
-    _scenePath: Assets/_CheckReference_/Scenes/Demo_CheckReference.unity
+    _scenePath: Assets/_Network_Photon/BasicTutorial/Scenes/Launcher.unity
   _mySceneReferences:
-  - _scenePath: Assets/_SceneReference/TestScene.unity
-  - _scenePath: Assets/Photon/PhotonUnityNetworking/Demos/PunCockpit/PunCockpit-Scene.unity
-  - _scenePath: Assets/_UI_Focusing_/Scenes/Sample.unity
-  - _scenePath: Assets/_Network_Photon/BasicTutorial/Scenes/Room for 4.unity
+  - _scenePath: Assets/_Network_Photon/BasicTutorial/Scenes/Launcher.unity
+  - _scenePath: Assets/_Network_Photon/BasicTutorial/Scenes/Launcher.unity
+  - _scenePath: Assets/_Network_Photon/BasicTutorial/Scenes/Launcher.unity
+  - _scenePath: Assets/_Network_Photon/BasicTutorial/Scenes/Launcher.unity
+  - _scenePath: Assets/_Network_Photon/BasicTutorial/Scenes/Launcher.unity
+  - _scenePath: Assets/_Network_Photon/BasicTutorial/Scenes/Launcher.unity
+  - _scenePath: Assets/_Network_Photon/BasicTutorial/Scenes/Launcher.unity
+  - _scenePath: Assets/_Network_Photon/BasicTutorial/Scenes/Launcher.unity
+  - _scenePath: Assets/_Network_Photon/BasicTutorial/Scenes/Launcher.unity
+  - _scenePath: Assets/_Network_Photon/BasicTutorial/Scenes/Launcher.unity
+  - _scenePath: Assets/_Network_Photon/BasicTutorial/Scenes/Launcher.unity
+  - _scenePath: Assets/_Network_Photon/BasicTutorial/Scenes/Launcher.unity
+  - _scenePath: Assets/_Network_Photon/BasicTutorial/Scenes/Launcher.unity
+  - _scenePath: Assets/_Network_Photon/BasicTutorial/Scenes/Launcher.unity
+  - _scenePath: Assets/_Network_Photon/BasicTutorial/Scenes/Launcher.unity
+  - _scenePath: Assets/_Network_Photon/BasicTutorial/Scenes/Launcher.unity
+  - _scenePath: Assets/_Network_Photon/BasicTutorial/Scenes/Launcher.unity
+  - _scenePath: Assets/_Network_Photon/BasicTutorial/Scenes/Launcher.unity
+  _go: {fileID: 0}
 --- !u!4 &231975409
 Transform:
   m_ObjectHideFlags: 0
@@ -768,6 +783,7 @@ MonoBehaviour:
   sceneRef:
     _scenePath: 
   _mySceneReferences: []
+  _go: {fileID: 3881121189199475751, guid: a6d72fdad50e38942bf9af1311b81fc2, type: 3}
 --- !u!4 &1978062628
 Transform:
   m_ObjectHideFlags: 0
