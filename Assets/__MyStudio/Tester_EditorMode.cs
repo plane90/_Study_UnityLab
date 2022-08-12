@@ -12,7 +12,7 @@ public class Tester_EditorMode : MonoBehaviour
 {
     [SerializeField] private ScenePath sceneRef;
     [SerializeField] private List<ScenePath> _mySceneReferences;
-    [SerializeField] private GameObject _go;
+    [SerializeField] private Tester _tester;
 
     private void OnEnable()
     {
@@ -26,8 +26,14 @@ public class Tester_EditorMode : MonoBehaviour
     }
 
     [ButtonMethod()]
-    public void LoadsTest()
+    public void DestroyComponentTest()
     {
-        SceneLoader.Instance?.LoadScene(_mySceneReferences, null, true);
+        Destroy(_tester);
+    }
+
+    [ButtonMethod()]
+    public void DestroyGoTest()
+    {
+        Destroy(_tester.gameObject);
     }
 }
