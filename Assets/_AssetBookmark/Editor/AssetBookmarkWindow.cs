@@ -41,7 +41,8 @@ public class AssetBookmarkWindow : EditorWindow
             {
                 _assets[index] = EditorGUI.ObjectField(rect, _assets[index], typeof(UnityEngine.Object), false);
                 UpdatePref();
-            }
+            },
+            drawNoneElementCallback = rect => EditorGUI.LabelField(rect, "즐겨 찾는 에셋을 등록하세요."),
         };
     }
 
