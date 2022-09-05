@@ -1,20 +1,32 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
 
 public class AssetBookmarkWindow : EditorWindow
 {
+    public class AssetInfo
+    {
+        public UnityEngine.Object asset;
+        public bool isExpanded;
+    }
+    
     /* View */
     private ReorderableList _assetListView;
     
     /* Model */
-    private List<UnityEngine.Object> _assets = new List<UnityEngine.Object>();
-
+    private List<AssetInfo> _assetInfos = new List<AssetInfo>();
     private string _regKey;
+    
+    private Vector2 _scrollPos;
+    private Rect _rectDragAndDropArea;
+    private const float kFoldoutWidth = 20f;
+    private const float kRemoveBtnWidth = 30f;
+    private const float kSpacing = 2f;
 
     [MenuItem("Window/Asset Bookmark")]
-    public static void ShowWindow()
+    public static void ShowWindow() 
     {
         var window = EditorWindow.GetWindow(typeof(AssetBookmarkWindow));
         window.minSize = new Vector2(100f, 100f);
@@ -27,37 +39,111 @@ public class AssetBookmarkWindow : EditorWindow
         foreach (var data in EditorPrefs.GetString(_regKey).Split('|'))
         {
             if (string.IsNullOrEmpty(data)) continue;
-            var idx = data.Substring(0, data.IndexOf('/'));
+            var ixExpanded = data.Substring(0, data.IndexOf('/'));
             var guid = data.Substring(data.IndexOf('/') + 1);
-            _assets.Add(AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(AssetDatabase.GUIDToAssetPath(guid)));
+            _assetInfos.Add(new AssetInfo
+            {
+                asset = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(AssetDatabase.GUIDToAssetPath(guid)),
+                isExpanded = (ixExpanded == "1")
+            });
         }
     }
 
     private void OnEnable()
     {
-        _assetListView = new ReorderableList(_assets, typeof(UnityEngine.Object), displayHeader: false, draggable: true, displayAddButton: true, displayRemoveButton: true)
+        _assetListView = new ReorderableList(_assetInfos, typeof(UnityEngine.Object), displayHeader: false, draggable: true, displayAddButton: true, displayRemoveButton: true)
         {
             drawElementCallback = (rect, index, active, focused) =>
             {
-                _assets[index] = EditorGUI.ObjectField(rect, _assets[index], typeof(UnityEngine.Object), false);
+                var rectFoldout = new Rect(rect.x, rect.y, kFoldoutWidth, EditorGUIUtility.singleLineHeight);
+                var rectObjField = new Rect(
+                    rectFoldout.xMax,
+                    rect.y,
+                    rect.width - kRemoveBtnWidth - kFoldoutWidth - kSpacing,
+                    EditorGUIUtility.singleLineHeight);
+                var rectRemoveBtn = new Rect(rect.xMax - kRemoveBtnWidth, rect.y, kRemoveBtnWidth, EditorGUIUtility.singleLineHeight);
+                var rectPath = new Rect(
+                    rect.x,
+                    rect.y + EditorGUIUtility.standardVerticalSpacing + EditorGUIUtility.singleLineHeight,
+                    rect.width,
+                    EditorGUIUtility.singleLineHeight);
+                
+                _assetInfos[index].isExpanded = EditorGUI.Foldout(rectFoldout, _assetInfos[index].isExpanded, new GUIContent());
+                if (_assetInfos[index].isExpanded)
+                {
+                    EditorGUI.LabelField(rectPath, AssetDatabase.GetAssetPath(_assetInfos[index].asset));
+                }
+                
+                _assetInfos[index].asset = EditorGUI.ObjectField(rectObjField, _assetInfos[index].asset, typeof(UnityEngine.Object), false);
+                
+                if (GUI.Button(rectRemoveBtn, new GUIContent("-", "Remove asset from list"), new GUIStyle(GUI.skin.button)))
+                {
+                    _assetInfos.RemoveAt(index);
+                }
+                
                 UpdatePref();
             },
             drawNoneElementCallback = rect => EditorGUI.LabelField(rect, "즐겨 찾는 에셋을 등록하세요."),
+            elementHeightCallback = index => _assetInfos[index].isExpanded ?
+                EditorGUIUtility.singleLineHeight * 2 + EditorGUIUtility.standardVerticalSpacing :
+                EditorGUIUtility.singleLineHeight,
         };
     }
 
     private void UpdatePref()
     {
         var prefVal = "";
-        for(var i = 0; i < _assets.Count; i++)
+        foreach (var assetInfo in _assetInfos)
         {
-            prefVal += $"{i}/{AssetDatabase.GUIDFromAssetPath(AssetDatabase.GetAssetPath(_assets[i])).ToString()}|";
+            prefVal += $"{(assetInfo.isExpanded ? "1" : "0")}/{AssetDatabase.GUIDFromAssetPath(AssetDatabase.GetAssetPath(assetInfo.asset)).ToString()}|";
         }
         EditorPrefs.SetString(_regKey, prefVal);
     }
 
     private void OnGUI()
     {
+        _scrollPos = EditorGUILayout.BeginScrollView(_scrollPos);
+        EditorGUILayout.BeginHorizontal();
+
+        _rectDragAndDropArea = GUILayoutUtility.GetRect(GUIContent.none, GUIStyle.none,
+            GUILayout.Height(EditorGUIUtility.singleLineHeight));
+        GUI.Box(_rectDragAndDropArea, "이 곳에 드랍하여 Asset을 추가하세요.");
+        if (GUILayout.Button("Clear", GUILayout.Width(45f)))
+        {
+            _assetInfos.Clear();
+            UpdatePref();
+        }
+        DraggingAndDropping(_rectDragAndDropArea);
+        EditorGUILayout.EndHorizontal();
         _assetListView.DoLayoutList();
+        EditorGUILayout.EndScrollView();
+    }
+    
+    private void DraggingAndDropping (Rect dropArea)
+    {
+        var currentEvent = Event.current;
+        
+        if (!dropArea.Contains (currentEvent.mousePosition))
+            return;
+        switch (currentEvent.type)
+        {
+            case EventType.DragUpdated:
+                DragAndDrop.visualMode = IsDragValid() ? DragAndDropVisualMode.Link : DragAndDropVisualMode.Rejected;
+                currentEvent.Use ();
+                break;
+            case EventType.DragPerform:
+                DragAndDrop.AcceptDrag();
+                foreach (var objectReference in DragAndDrop.objectReferences)
+                {
+                    _assetInfos.Add(new AssetInfo { asset = objectReference});
+                }
+                currentEvent.Use();
+                break;
+        }
+    }
+    
+    private static bool IsDragValid ()
+    {
+        return !DragAndDrop.objectReferences.OfType<GameObject>().Any();
     }
 }
