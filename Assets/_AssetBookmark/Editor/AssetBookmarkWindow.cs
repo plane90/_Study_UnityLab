@@ -111,10 +111,15 @@ public class AssetBookmarkWindow : EditorWindow
         // 헤더 레이아웃
         EditorGUILayout.BeginHorizontal();
 
+        // GUIStyle: Box의 스타일 정의 
+        GUIStyle centredStyle = GUI.skin.box;
+        centredStyle.alignment = TextAnchor.MiddleCenter;
+        centredStyle.normal.textColor = GUI.skin.button.normal.textColor;
+        
         // Box: Drag&Drop Area
         _rectDragAndDropArea = GUILayoutUtility.GetRect(GUIContent.none, GUIStyle.none,
             GUILayout.Height(EditorGUIUtility.singleLineHeight));
-        GUI.Box(_rectDragAndDropArea, "이 곳에 드랍하여 Asset을 추가하세요.");
+        GUI.Box(_rectDragAndDropArea, "이 곳에 드랍하여 Asset을 추가하세요.", centredStyle);
         DraggingAndDropping(_rectDragAndDropArea);
         
         // Button: Clear
