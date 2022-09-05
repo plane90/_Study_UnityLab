@@ -56,26 +56,30 @@ public class AssetBookmarkWindow : EditorWindow
             drawElementCallback = (rect, index, active, focused) =>
             {
                 var rectFoldout = new Rect(rect.x, rect.y, kFoldoutWidth, EditorGUIUtility.singleLineHeight);
-                var rectObjField = new Rect(
-                    rectFoldout.xMax,
-                    rect.y,
-                    rect.width - kRemoveBtnWidth - kFoldoutWidth - kSpacing,
-                    EditorGUIUtility.singleLineHeight);
-                var rectRemoveBtn = new Rect(rect.xMax - kRemoveBtnWidth, rect.y, kRemoveBtnWidth, EditorGUIUtility.singleLineHeight);
-                var rectPath = new Rect(
-                    rect.x,
-                    rect.y + EditorGUIUtility.standardVerticalSpacing + EditorGUIUtility.singleLineHeight,
-                    rect.width,
-                    EditorGUIUtility.singleLineHeight);
                 
+                var rectObjField = rectFoldout;
+                rectObjField.x = rectFoldout.xMax;
+                rectObjField.xMax = rect.xMax - kRemoveBtnWidth - kSpacing;
+
+                var rectRemoveBtn = rectObjField;
+                rectRemoveBtn.x = rectObjField.xMax + kSpacing;
+                rectRemoveBtn.xMax = rect.xMax;
+                
+                var rectPath = rectFoldout;
+                rectPath.y += EditorGUIUtility.standardVerticalSpacing + EditorGUIUtility.singleLineHeight;
+                rectPath.width = rect.width;
+                
+                // Foldout: 경로 보이기/숨기기
                 _assetInfos[index].isExpanded = EditorGUI.Foldout(rectFoldout, _assetInfos[index].isExpanded, new GUIContent());
                 if (_assetInfos[index].isExpanded)
                 {
                     EditorGUI.LabelField(rectPath, AssetDatabase.GetAssetPath(_assetInfos[index].asset));
                 }
                 
+                // ObjectField: Asset 프로퍼티
                 _assetInfos[index].asset = EditorGUI.ObjectField(rectObjField, _assetInfos[index].asset, typeof(UnityEngine.Object), false);
                 
+                // Button: 원소 제거
                 if (GUI.Button(rectRemoveBtn, new GUIContent("-", "Remove asset from list"), new GUIStyle(GUI.skin.button)))
                 {
                     _assetInfos.RemoveAt(index);
@@ -102,20 +106,28 @@ public class AssetBookmarkWindow : EditorWindow
 
     private void OnGUI()
     {
+        // 스크롤바
         _scrollPos = EditorGUILayout.BeginScrollView(_scrollPos);
+        // 헤더 레이아웃
         EditorGUILayout.BeginHorizontal();
 
+        // Box: Drag&Drop Area
         _rectDragAndDropArea = GUILayoutUtility.GetRect(GUIContent.none, GUIStyle.none,
             GUILayout.Height(EditorGUIUtility.singleLineHeight));
         GUI.Box(_rectDragAndDropArea, "이 곳에 드랍하여 Asset을 추가하세요.");
+        DraggingAndDropping(_rectDragAndDropArea);
+        
+        // Button: Clear
         if (GUILayout.Button("Clear", GUILayout.Width(45f)))
         {
             _assetInfos.Clear();
             UpdatePref();
         }
-        DraggingAndDropping(_rectDragAndDropArea);
         EditorGUILayout.EndHorizontal();
+        
+        // 리오더러블리스트
         _assetListView.DoLayoutList();
+        
         EditorGUILayout.EndScrollView();
     }
     
@@ -142,8 +154,5 @@ public class AssetBookmarkWindow : EditorWindow
         }
     }
     
-    private static bool IsDragValid ()
-    {
-        return !DragAndDrop.objectReferences.OfType<GameObject>().Any();
-    }
+    private static bool IsDragValid () => !DragAndDrop.objectReferences.OfType<GameObject>().Any();
 }
