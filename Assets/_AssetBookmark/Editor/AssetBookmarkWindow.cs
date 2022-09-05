@@ -146,13 +146,13 @@ public class AssetBookmarkWindow : EditorWindow
         {
             case EventType.DragUpdated:
                 DragAndDrop.visualMode = IsDragValid() ? DragAndDropVisualMode.Link : DragAndDropVisualMode.Rejected;
-                currentEvent.Use ();
+                currentEvent.Use();
                 break;
             case EventType.DragPerform:
                 DragAndDrop.AcceptDrag();
                 foreach (var objectReference in DragAndDrop.objectReferences)
                 {
-                    _assetInfos.Add(new AssetInfo { asset = objectReference});
+                    _assetInfos.Add(new AssetInfo { asset = objectReference });
                 }
                 currentEvent.Use();
                 break;
