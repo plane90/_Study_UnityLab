@@ -17,6 +17,8 @@ public class AssetBookmarkWindow : EditorWindow
     
     /* Model */
     private List<AssetInfo> _assetInfos = new List<AssetInfo>();
+    private List<AssetInfo> _assetInfosUndo = new List<AssetInfo>();
+    private List<AssetInfo> _assetInfosRedo = new List<AssetInfo>();
     private string _regKey;
     
     private Vector2 _scrollPos;
@@ -84,7 +86,7 @@ public class AssetBookmarkWindow : EditorWindow
                 {
                     _assetInfos.RemoveAt(index);
                 }
-                
+                Debug.Log("TEstest");
                 UpdatePref();
             },
             drawNoneElementCallback = rect => EditorGUI.LabelField(rect, "즐겨 찾는 에셋을 등록하세요."),
@@ -159,5 +161,5 @@ public class AssetBookmarkWindow : EditorWindow
         }
     }
     
-    private static bool IsDragValid() => !DragAndDrop.objectReferences.OfType<GameObject>().Any();
+    private static bool IsDragValid() => !DragAndDrop.objectReferences.OfType<GameObject>().Any(x => x.scene.isLoaded);
 }
