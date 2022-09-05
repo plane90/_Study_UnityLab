@@ -136,7 +136,7 @@ public class AssetBookmarkWindow : EditorWindow
         EditorGUILayout.EndScrollView();
     }
     
-    private void DraggingAndDropping (Rect dropArea)
+    private void DraggingAndDropping(Rect dropArea)
     {
         var currentEvent = Event.current;
         
@@ -159,5 +159,5 @@ public class AssetBookmarkWindow : EditorWindow
         }
     }
     
-    private static bool IsDragValid () => !DragAndDrop.objectReferences.OfType<GameObject>().Any();
+    private static bool IsDragValid() => !DragAndDrop.objectReferences.OfType<GameObject>().Any();
 }
