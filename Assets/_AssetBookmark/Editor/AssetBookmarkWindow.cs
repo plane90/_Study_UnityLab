@@ -110,6 +110,7 @@ public class AssetBookmarkWindow : EditorWindow
     {
         // 스크롤바
         _scrollPos = EditorGUILayout.BeginScrollView(_scrollPos);
+        
         // 헤더 레이아웃
         EditorGUILayout.BeginHorizontal();
 
