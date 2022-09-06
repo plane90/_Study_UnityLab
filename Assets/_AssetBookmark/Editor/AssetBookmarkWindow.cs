@@ -86,7 +86,7 @@ public class AssetBookmarkWindow : EditorWindow
                 {
                     _assetInfos.RemoveAt(index);
                 }
-                Debug.Log("TEstest");
+                
                 UpdatePref();
             },
             drawNoneElementCallback = rect => EditorGUI.LabelField(rect, "즐겨 찾는 에셋을 등록하세요."),
@@ -131,6 +131,7 @@ public class AssetBookmarkWindow : EditorWindow
             _assetInfos.Clear();
             UpdatePref();
         }
+        
         EditorGUILayout.EndHorizontal();
         
         // 리오더러블리스트
