@@ -17,8 +17,6 @@ public class AssetBookmarkWindow : EditorWindow
     
     /* Model */
     private List<AssetInfo> _assetInfos = new List<AssetInfo>();
-    private List<AssetInfo> _assetInfosUndo = new List<AssetInfo>();
-    private List<AssetInfo> _assetInfosRedo = new List<AssetInfo>();
     private string _regKey;
     
     private Vector2 _scrollPos;
